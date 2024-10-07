@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addTodo,
@@ -12,12 +12,22 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [allTodos, setAllTodos] = useState([]);
 
   const dispatch = useDispatch();
   const todos = useSelector((state) => state.todos.todos);
   console.log(todos);
 
-  const filteredTodos = todos.filter((todo) =>
+  localStorage.setItem("localTodos", JSON.stringify(todos));
+
+  useEffect(() => {
+    const localTodos = JSON.parse(localStorage.getItem("localTodos"));
+    if (localTodos.length) {
+      setAllTodos(localTodos);
+    }
+  }, [todos.length]);
+
+  const filteredTodos = allTodos.filter((todo) =>
     todo.text.toLowerCase().includes(searchTerm.toLowerCase())
   );
   console.log(filteredTodos);
