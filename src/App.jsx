@@ -12,25 +12,22 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [allTodos, setAllTodos] = useState([]);
+  const [, setAllTodos] = useState([]);
 
   const dispatch = useDispatch();
   const todos = useSelector((state) => state.todos.todos);
-  console.log(todos);
-
-  localStorage.setItem("localTodos", JSON.stringify(todos));
 
   useEffect(() => {
+    localStorage.setItem("localTodos", JSON.stringify(todos));
     const localTodos = JSON.parse(localStorage.getItem("localTodos"));
-    if (localTodos.length) {
+    if (localTodos.length > 0) {
       setAllTodos(localTodos);
     }
   }, [todos.length]);
 
-  const filteredTodos = allTodos.filter((todo) =>
+  const filteredTodos = todos.filter((todo) =>
     todo.text.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  console.log(filteredTodos);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing) {
@@ -49,7 +46,7 @@ function App() {
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className="flex flex-col items-center justify-center">
       <h1 className="text-3xl text-center font-headingFont">
         Stackholic Todo App
       </h1>
@@ -69,26 +66,29 @@ function App() {
         <button type="submit">{isEditing ? "Save" : "Add"}</button>
       </form>
       <ul>
-        {filteredTodos?.map((todo) => {
-          <li key={todo.id}>
-            <span className={`${todo.completed} ? "line-through" : "none"`}>
-              {todo.text}
-            </span>
-            <button
-              onClick={() => {
-                dispatch(toggleTodo({ id: todo.id }));
-              }}>
-              {todo.completed ? "Undo" : "Complete"}
-            </button>
-            <button onClick={() => handleEdit(todo)}>Edit</button>
-            <button
-              onClick={() => {
-                dispatch(deleteTodo({ id: todo.id }));
-              }}>
-              Delete
-            </button>
-          </li>;
-        })}
+        {filteredTodos?.length > 0 &&
+          filteredTodos?.map((todo) => {
+            return (
+              <li key={todo.id}>
+                <span className={`${todo.completed} ? "line-through" : "none"`}>
+                  {todo.text}
+                </span>
+                <button
+                  onClick={() => {
+                    dispatch(toggleTodo({ id: todo.id }));
+                  }}>
+                  {todo.completed ? "Undo" : "Complete"}
+                </button>
+                <button onClick={() => handleEdit(todo)}>Edit</button>
+                <button
+                  onClick={() => {
+                    dispatch(deleteTodo({ id: todo.id }));
+                  }}>
+                  Delete
+                </button>
+              </li>
+            );
+          })}
       </ul>
     </div>
   );
