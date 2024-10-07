@@ -1,5 +1,11 @@
 import { useState } from "react";
-import "./App.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addTodo,
+  toggleTodo,
+  updateTodo,
+  deleteTodo,
+} from "./redux/todos/todoSlice.js";
 
 function App() {
   const [input, setInput] = useState("");
@@ -7,18 +13,36 @@ function App() {
   const [currentId, setCurrentId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const dispatch = useDispatch();
+  const todos = useSelector((state) => state.todos.todos);
+  console.log(todos);
+
+  const filteredTodos = todos.filter((todo) =>
+    todo.text.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  console.log(filteredTodos);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing) {
+      dispatch(updateTodo({ id: currentId, text: input }));
       setIsEditing(false);
     } else {
-      console.log("Adding todo");
+      dispatch(addTodo({ text: input }));
     }
     setInput("");
   };
+  const handleEdit = (todo) => {
+    if (todo) {
+      setIsEditing(true);
+      setInput(todo.text);
+      setCurrentId(todo.id);
+    }
+  };
   return (
-    <div>
-      <h1>Stackholic Todo App</h1>
+    <div className="flex flex-col items-center justify-center w-full">
+      <h1 className="text-3xl text-center font-headingFont">
+        Stackholic Todo App
+      </h1>
       <input
         type="text"
         placeholder="Search todo..."
@@ -35,12 +59,24 @@ function App() {
         <button type="submit">{isEditing ? "Save" : "Add"}</button>
       </form>
       <ul>
-        {todos.map((todo) => {
+        {filteredTodos?.map((todo) => {
           <li key={todo.id}>
-            <span>{todo.text}</span>
-            <button>Complete</button>
-            <button>Edit</button>
-            <button>Delete</button>
+            <span className={`${todo.completed} ? "line-through" : "none"`}>
+              {todo.text}
+            </span>
+            <button
+              onClick={() => {
+                dispatch(toggleTodo({ id: todo.id }));
+              }}>
+              {todo.completed ? "Undo" : "Complete"}
+            </button>
+            <button onClick={() => handleEdit(todo)}>Edit</button>
+            <button
+              onClick={() => {
+                dispatch(deleteTodo({ id: todo.id }));
+              }}>
+              Delete
+            </button>
           </li>;
         })}
       </ul>
