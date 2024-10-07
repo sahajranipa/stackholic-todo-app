@@ -47,10 +47,20 @@
   list-style: none;
   display: flex;
   align-items: center;
-  width: 50%;
+  justify-content: space-around;
+  gap: 2rem;
   margin-block: 2rem;
+  padding: 1rem;
+  border: 1px solid lightgray;
+  box-shadow: 10px 5px 5px lightgray;
+  border-radius: 10px;
+  width: 70%;
 }
-
+.todo_action_btns {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
 .toggle_btn {
   padding: 1rem 2rem;
   border: 1px solid transparent;

@@ -7,6 +7,7 @@ import {
   deleteTodo,
 } from "./redux/todos/todoSlice.js";
 import "./App.css";
+import { CircleCheckBig, Pencil, Trash2, X } from "lucide-react";
 
 function App() {
   const [input, setInput] = useState("");
@@ -52,6 +53,7 @@ function App() {
   return (
     <div className="todo_container">
       <h1 className="todo_title">Stackholic Todo App</h1>
+
       <input
         className="todo_input"
         type="text"
@@ -59,6 +61,7 @@ function App() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
+
       <form className="todo_form" onSubmit={handleSubmit}>
         <input
           className="todo_input"
@@ -76,6 +79,7 @@ function App() {
           filteredTodos?.map((todo) => {
             return (
               <li className="todo_list_items" key={todo.id}>
+                {" "}
                 <span
                   style={{
                     textDecoration: todo.completed ? "line-through" : "none",
@@ -85,7 +89,24 @@ function App() {
                   }}>
                   {todo.text}
                 </span>
-                <button
+                <div className="todo_action_btns">
+                  <span
+                    onClick={() => {
+                      dispatch(toggleTodo({ id: todo.id }));
+                    }}>
+                    {todo.completed ? <CircleCheckBig /> : <X />}
+                  </span>
+                  <span onClick={() => handleEdit(todo)}>
+                    <Pencil />
+                  </span>
+                  <span
+                    onClick={() => {
+                      dispatch(deleteTodo({ id: todo.id }));
+                    }}>
+                    <Trash2 />
+                  </span>
+                </div>
+                {/* <button
                   className="toggle_btn"
                   onClick={() => {
                     dispatch(toggleTodo({ id: todo.id }));
@@ -101,7 +122,7 @@ function App() {
                     dispatch(deleteTodo({ id: todo.id }));
                   }}>
                   Delete
-                </button>
+                </button> */}
               </li>
             );
           })}
