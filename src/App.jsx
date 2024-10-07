@@ -6,6 +6,7 @@ import {
   updateTodo,
   deleteTodo,
 } from "./redux/todos/todoSlice.js";
+import "./App.css";
 
 function App() {
   const [input, setInput] = useState("");
@@ -28,13 +29,16 @@ function App() {
   const filteredTodos = todos.filter((todo) =>
     todo.text.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  console.log(filteredTodos);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing) {
       dispatch(updateTodo({ id: currentId, text: input }));
       setIsEditing(false);
     } else {
-      dispatch(addTodo({ text: input }));
+      if (input !== "") {
+        dispatch(addTodo({ text: input }));
+      }
     }
     setInput("");
   };
@@ -46,41 +50,53 @@ function App() {
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="text-3xl text-center font-headingFont">
-        Stackholic Todo App
-      </h1>
+    <div className="todo_container">
+      <h1 className="todo_title">Stackholic Todo App</h1>
       <input
+        className="todo_input"
         type="text"
         placeholder="Search todo..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <form onSubmit={handleSubmit}>
+      <form className="todo_form" onSubmit={handleSubmit}>
         <input
+          className="todo_input"
           type="text"
           placeholder="Add todo..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button type="submit">{isEditing ? "Save" : "Add"}</button>
+        <button className="add_button" type="submit">
+          {isEditing ? "Save" : "Add"}
+        </button>
       </form>
-      <ul>
+      <ul className="todo_list_container">
         {filteredTodos?.length > 0 &&
           filteredTodos?.map((todo) => {
             return (
-              <li key={todo.id}>
-                <span className={`${todo.completed} ? "line-through" : "none"`}>
+              <li className="todo_list_items" key={todo.id}>
+                <span
+                  style={{
+                    textDecoration: todo.completed ? "line-through" : "none",
+                    fontSize: "1.5rem",
+                    fontFamily: "Arial",
+                    marginRight: "2rem",
+                  }}>
                   {todo.text}
                 </span>
                 <button
+                  className="toggle_btn"
                   onClick={() => {
                     dispatch(toggleTodo({ id: todo.id }));
                   }}>
                   {todo.completed ? "Undo" : "Complete"}
                 </button>
-                <button onClick={() => handleEdit(todo)}>Edit</button>
+                <button className="edit_btn" onClick={() => handleEdit(todo)}>
+                  Edit
+                </button>
                 <button
+                  className="delete_btn"
                   onClick={() => {
                     dispatch(deleteTodo({ id: todo.id }));
                   }}>
