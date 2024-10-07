@@ -7,7 +7,7 @@ import {
   deleteTodo,
 } from "./redux/todos/todoSlice.js";
 import "./App.css";
-import { CircleCheckBig, Pencil, Trash2, X } from "lucide-react";
+import { CircleCheckBig, ListChecks, Pencil, Trash2, X } from "lucide-react";
 
 function App() {
   const [input, setInput] = useState("");
@@ -52,7 +52,9 @@ function App() {
   };
   return (
     <div className="todo_container">
-      <h1 className="todo_title">Stackholic Todo App</h1>
+      <h1 className="todo_title">
+        Stackholic Todo App <ListChecks size="50" />
+      </h1>
 
       <input
         className="todo_input"
@@ -94,7 +96,7 @@ function App() {
                     onClick={() => {
                       dispatch(toggleTodo({ id: todo.id }));
                     }}>
-                    {todo.completed ? <CircleCheckBig /> : <X />}
+                    {todo.completed ? <X /> : <CircleCheckBig />}
                   </span>
                   <span onClick={() => handleEdit(todo)}>
                     <Pencil />
